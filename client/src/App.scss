@@ -1,0 +1,35 @@
+@import './_variables';
+
+.App {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.Page {
+  .Page__body {
+    height: 100vh;
+    min-height: 800px;
+    max-width: 700px;
+    margin: auto;
+    padding: 0 15px;
+    display: flex;
+  }
+  .Page__center-card {
+    background: #ffffff;
+    align-self: center;
+    width: 100%;
+    padding: 40px 25px;
+    border-radius: 3px;
+    text-align: center;
+    .Page__center-card__heading {
+      margin-bottom: 50px;
+    }
+    .Page__center-card__heading--main {
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+  }
+}
+.Page--blue {
+  background: $primary-color;
+}
