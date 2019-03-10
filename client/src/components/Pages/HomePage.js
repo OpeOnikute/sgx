@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import './HomePage.scss';
-import WelcomeForm from './HomePage/WelcomeForm';
+import CreateStoryForm from './HomePage/CreateStoryForm';
 
 class HomePage extends Component {
-  onSubmit = (evt) => {
-    evt.preventDefault();
+  onCreateStory = ({ story }) => {
+    this.props.history.push({ pathname: '/invite', state: { story } });
   };
 
   render() {
@@ -20,7 +20,9 @@ class HomePage extends Component {
                 Write a cool story with a friend as mad as you.
               </div>
             </div>
-            <WelcomeForm />
+            <div className="Page__center-card__body">
+              <CreateStoryForm onCreateStory={this.onCreateStory} />
+            </div>
           </div>
         </div>
       </div>

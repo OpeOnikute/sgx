@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import './WelcomeForm.scss';
+import './CreateStoryForm.scss';
+import createStory from '../../../api';
+import PropTypes from 'prop-types';
 
-class WelcomeForm extends Component {
+class CreateStoryForm extends Component {
+  static propTypes = {
+    onCreateStory: PropTypes.func.isRequired,
+  };
+
   state = {
     name: '',
     email: '',
@@ -9,11 +15,12 @@ class WelcomeForm extends Component {
     formError: '',
   };
 
-  onSubmit = (evt) => {
+  onSubmit = async (evt) => {
     evt.preventDefault();
-
-    const { name, email, storyTitle } = this.state;
     if (!this.validateForm()) return;
+    const { name, email, storyTitle } = this.state;
+    const story = await createStory({ name, email, storyTitle });
+    this.props.onCreateStory({ story });
   };
 
   validateForm() {
@@ -24,7 +31,7 @@ class WelcomeForm extends Component {
       return;
     }
     if (email) {
-      const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (!re.test(email.toLowerCase())) {
         this.setState({ formError: 'Please enter a valid email address' });
         return;
@@ -52,7 +59,7 @@ class WelcomeForm extends Component {
           <div className="Form__prompt Form__prompt--error">{formError}</div>
         )}
         <div className="Form__input-group">
-          <label for="name" className="Form__label">
+          <label htmlFor="name" className="Form__label">
             What's your name?
           </label>
           <input
@@ -64,7 +71,7 @@ class WelcomeForm extends Component {
           />
         </div>
         <div className="Form__input-group">
-          <label for="email" className="Form__label">
+          <label htmlFor="email" className="Form__label">
             What's your email? (optional)
           </label>
           <input
@@ -75,7 +82,7 @@ class WelcomeForm extends Component {
           />
         </div>
         <div className="Form__input-group">
-          <label for="storyTitle" className="Form__label">
+          <label htmlFor="storyTitle" className="Form__label">
             What's the title of the story?
           </label>
           <input
@@ -97,4 +104,4 @@ class WelcomeForm extends Component {
   }
 }
 
-export default WelcomeForm;
+export default CreateStoryForm;
