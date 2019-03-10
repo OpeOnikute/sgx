@@ -19,7 +19,7 @@ type Handler struct{}
 const DBNAME = "sgx"
 
 // AddStory adds a Story in the DB
-func (r Handler) AddStory(params StoryRequestBody) bool {
+func (r Handler) AddStory(params StoryRequestBody) (Story, error) {
 
 	var playerOne Player
 	collection := "story"
@@ -38,12 +38,13 @@ func (r Handler) AddStory(params StoryRequestBody) bool {
 
 	if err := db.Session.C(collection).Insert(story); err != nil {
 		log.Println(err)
-		return false
+		return story, err
 	}
 
-	return true
+	return story, nil
 }
 
+// GetStoryByID fetches a story by the specified ID.
 func (r Handler) GetStoryByID(ID string) (Story, error) {
 
 	var story Story
@@ -84,7 +85,7 @@ func (r Handler) ParseStory(ID string) (string, error) {
 }
 
 // JoinStory adds player two
-func (r Handler) JoinStory(params JoinStoryRequestBody) bool {
+func (r Handler) JoinStory(params JoinStoryRequestBody) (Story, error) {
 
 	var playerTwo = Player{}
 
@@ -98,7 +99,7 @@ func (r Handler) JoinStory(params JoinStoryRequestBody) bool {
 
 	if err := c.FindId(bson.ObjectIdHex(params.StoryID)).One(&story); err != nil {
 		log.Println(err)
-		return false
+		return story, err
 	}
 
 	story.PlayerTwo = playerTwo
@@ -108,21 +109,21 @@ func (r Handler) JoinStory(params JoinStoryRequestBody) bool {
 
 	if err != nil {
 		log.Println(err)
-		return false
+		return story, err
 	}
 
-	return true
+	return story, nil
 }
 
 // AddParagraph ...
-func (r Handler) AddParagraph(params AddParagraphRequestBody) bool {
+func (r Handler) AddParagraph(params AddParagraphRequestBody) (Story, error) {
 
 	var story Story
 	c := db.Session.C("story")
 
 	if err := c.FindId(bson.ObjectIdHex(params.StoryID)).One(&story); err != nil {
 		log.Println(err)
-		return false
+		return story, err
 	}
 
 	var content = StoryFormat{
@@ -137,10 +138,10 @@ func (r Handler) AddParagraph(params AddParagraphRequestBody) bool {
 
 	if err != nil {
 		log.Println(err)
-		return false
+		return story, err
 	}
 
-	return true
+	return story, nil
 }
 
 // GetStories returns the list of Stories

@@ -38,12 +38,14 @@ func (c *Controller) AddStory(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//from here, add better data validation
-	success := c.Handler.AddStory(story) // adds the product to the DB
-	if !success {
+	createdStory, err := c.Handler.AddStory(story) // adds the product to the DB
+	if err != nil {
 		response.Message = "There was a problem creating the story. Please try again"
 		c.Handler.SendError(w, 500, response, nil)
 		return
 	}
+
+	response.Data = createdStory
 
 	c.Handler.SendSuccess(w, response)
 }
@@ -72,7 +74,7 @@ func (c *Controller) AddParagraph(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		response.Message = err.Error()
-		c.Handler.SendError(w, 400, response, nil)
+		c.Handler.SendError(w, 400, response, err)
 		return
 	}
 
@@ -88,13 +90,14 @@ func (c *Controller) AddParagraph(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	success := c.Handler.AddParagraph(body)
-	if !success {
+	story, err = c.Handler.AddParagraph(body)
+	if err != nil {
 		response.Message = "There was a problem adding the paragraph. Please try again."
-		c.Handler.SendError(w, 500, response, nil)
+		c.Handler.SendError(w, 500, response, err)
 		return
 	}
 
+	response.Data = story
 	c.Handler.SendSuccess(w, response)
 
 }
@@ -124,7 +127,7 @@ func (c *Controller) JoinStory(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		response.Message = err.Error()
-		c.Handler.SendError(w, 400, response, nil)
+		c.Handler.SendError(w, 400, response, err)
 		return
 	}
 
@@ -135,13 +138,14 @@ func (c *Controller) JoinStory(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//from here, add better data validation
-	success := c.Handler.JoinStory(validRequest)
-	if !success {
+	story, err = c.Handler.JoinStory(validRequest)
+	if err != nil {
 		response.Message = "There was a problem joining the story. Please try again"
-		c.Handler.SendError(w, 500, response, nil)
+		c.Handler.SendError(w, 500, response, err)
 		return
 	}
 
+	response.Data = story
 	c.Handler.SendSuccess(w, response)
 }
 
@@ -180,7 +184,7 @@ func (c *Controller) GetParsedStory(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		response.Message = err.Error()
-		c.Handler.SendError(w, 400, response, nil)
+		c.Handler.SendError(w, 400, response, err)
 		return
 	}
 
