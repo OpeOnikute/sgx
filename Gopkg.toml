@@ -26,7 +26,8 @@
 
 
 metadata.heroku
-  root-package = "https://github.com/OpeOnikute/sgx"
+  root-package = "sgx-api"
+  install = ["./..."]
 
 [[constraint]]
   name = "github.com/gorilla/handlers"
