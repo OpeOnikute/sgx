@@ -25,8 +25,8 @@
 #   unused-packages = true
 
 
-metadata.heroku
-  root-package = "sgx-api"
+[metadata.heroku]
+  root-package = "sgx"
   install = ["./..."]
 
 [[constraint]]
