@@ -29,11 +29,12 @@ func (r Handler) AddStory(params StoryRequestBody) (Story, error) {
 	playerOne.Email = params.PlayerEmail
 
 	var story = Story{
-		ID:        bson.NewObjectId(),
-		Title:     params.Title,
-		PlayerOne: playerOne,
-		Status:    "open",
-		Created:   time.Now(),
+		ID:         bson.NewObjectId(),
+		InviteCode: betterguid.New(),
+		Title:      params.Title,
+		PlayerOne:  playerOne,
+		Status:     "open",
+		Created:    time.Now(),
 	}
 
 	if err := db.Session.C(collection).Insert(story); err != nil {
@@ -52,6 +53,23 @@ func (r Handler) GetStoryByID(ID string) (Story, error) {
 	c := db.Session.C("story")
 
 	if err := c.FindId(bson.ObjectIdHex(ID)).One(&story); err != nil {
+		log.Println(err)
+		return story, err
+	}
+
+	return story, nil
+}
+
+// GetStoryByField fetches a story by the specified field.
+func (r Handler) GetStoryByField(field, value string) (Story, error) {
+
+	var story Story
+
+	c := db.Session.C("story")
+
+	query := bson.M{field: value}
+
+	if err := c.Find(query).One(&story); err != nil {
 		log.Println(err)
 		return story, err
 	}
@@ -93,11 +111,11 @@ func (r Handler) JoinStory(params JoinStoryRequestBody) (Story, error) {
 	playerTwo.Name = params.PlayerName
 	playerTwo.Email = params.PlayerEmail
 
-	var story Story
-
 	c := db.Session.C("story")
 
-	if err := c.FindId(bson.ObjectIdHex(params.StoryID)).One(&story); err != nil {
+	story, err := r.GetStoryByField("invitecode", params.Code)
+
+	if err != nil {
 		log.Println(err)
 		return story, err
 	}
@@ -105,7 +123,7 @@ func (r Handler) JoinStory(params JoinStoryRequestBody) (Story, error) {
 	story.PlayerTwo = playerTwo
 	story.Status = "active"
 
-	err := c.UpdateId(story.ID, story)
+	err = c.UpdateId(story.ID, story)
 
 	if err != nil {
 		log.Println(err)
@@ -170,6 +188,7 @@ func (r Handler) SendSuccess(w http.ResponseWriter, data Response) bool {
 func (r Handler) SendError(w http.ResponseWriter, code int, response Response, err error) {
 	if err != nil {
 		log.Println(err)
+		response.Data = err.Error()
 	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")

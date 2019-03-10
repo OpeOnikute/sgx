@@ -32,14 +32,15 @@ type StoryFormat struct {
 }
 
 type Story struct {
-	ID        bson.ObjectId `bson:"_id" json:"_id,omitempty"`
-	Title     string        `json:"title"`
-	PlayerOne Player        `json:"playerOne"`
-	PlayerTwo Player        `json:"playerTwo"`
-	Content   []StoryFormat `json:"content"`
-	SocketURL string        `json:"socketurl,omitempty"`
-	Status    string        `json:"status"`
-	Created   time.Time     `json:"created"`
+	ID         bson.ObjectId `bson:"_id" json:"_id,omitempty"`
+	Title      string        `json:"title"`
+	InviteCode string        `json:"inviteCode,omitempty"`
+	PlayerOne  Player        `json:"playerOne"`
+	PlayerTwo  Player        `json:"playerTwo"`
+	Content    []StoryFormat `json:"content"`
+	SocketURL  string        `json:"socketurl,omitempty"`
+	Status     string        `json:"status"`
+	Created    time.Time     `json:"created"`
 }
 
 type Stories []Story

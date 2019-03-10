@@ -13,7 +13,7 @@ type StoryRequestBody struct {
 
 //JoinStoryRequestBody - schema for expected params in story request body
 type JoinStoryRequestBody struct {
-	StoryID     string `json:"storyID"`
+	Code        string `json:"code"`
 	PlayerName  string `json:"playerName"`
 	PlayerEmail string `json:"playerEmail"`
 }
@@ -48,8 +48,8 @@ func (s *StoryRequestBody) validate() url.Values {
 func (s *JoinStoryRequestBody) validate() url.Values {
 	errs := url.Values{}
 
-	if s.StoryID == "" {
-		errs.Add("story", "Please enter a valid story.")
+	if s.Code == "" {
+		errs.Add("code", "Please enter a valid code.")
 	}
 
 	if s.PlayerName == "" {

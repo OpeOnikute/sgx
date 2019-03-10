@@ -123,7 +123,7 @@ func (c *Controller) JoinStory(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//confirm the story exists first
-	story, err := c.Handler.GetStoryByID(validRequest.StoryID)
+	story, err := c.Handler.GetStoryByField("invitecode", validRequest.Code)
 
 	if err != nil {
 		response.Message = err.Error()
