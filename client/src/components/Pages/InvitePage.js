@@ -20,6 +20,9 @@ class InvitePage extends Component {
 
     try {
       const successful = document.execCommand('copy');
+      if (successful) {
+        this.setState({ userHasCopiedText: true });
+      }
     } catch (err) {}
     document.body.removeChild(textArea);
   };
