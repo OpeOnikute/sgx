@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import './InvitePage.scss';
 
+const APP_INVITE_URL = 'https://sgx.com/link';
+
 class InvitePage extends Component {
   state = {
     userHasCopiedText: false,
@@ -67,7 +69,7 @@ class InvitePage extends Component {
                   className="Invite__link"
                   onClick={this.onClickInviteLink}
                 >
-                  {story.link}
+                  {APP_INVITE_URL + '/' + story.inviteID}
                 </button>
               </div>
             </div>
