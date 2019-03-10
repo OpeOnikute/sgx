@@ -7,7 +7,7 @@
     background: #eeeeee;
   }
   .Invite__message {
-    margin-bottom: 35px;
+    margin-bottom: 15px;
   }
   .Invite__link__message {
     height: 1.5rem;
@@ -23,13 +23,50 @@
     overflow-x: scroll;
     background: none;
     padding: 7.5px 10px;
-    font-size: 0.8rem;
     border: 1px solid #eeeeee;
     max-width: 100%;
-    font-size: 0.75rem;
+    margin-bottom: 30px;
+    cursor: pointer;
+    font-size: 0.9rem;
   }
   button.Invite__link:focus,
   button.Invite__link:active {
     text-decoration: underline;
+  }
+  .Invite__social {
+    max-width: 520px;
+    margin: auto;
+    .Invite__social__wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -20px;
+      .Invite__social__section {
+        flex: 1 1 250px;
+        padding: 10px 20px;
+        button.Invite__social__button {
+          width: 100%;
+          background: $primary-color;
+          padding: 20px 20px;
+          color: #ffffff;
+          font-size: 1rem;
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 0;
+          cursor: pointer;
+          font-size: 0.9rem;
+          border-radius: 3px;
+          svg {
+            margin-right: 10px;
+            height: 20px;
+            fill: #ffffff;
+          }
+          span {
+            line-height: 20px;
+          }
+        }
+      }
+    }
   }
 }

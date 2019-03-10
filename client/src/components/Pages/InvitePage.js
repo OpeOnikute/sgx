@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import './InvitePage.scss';
+import twitterIcon from '../../svgs/twitterIcon';
+import fbIcon from '../../svgs/fbIcon';
 
 const APP_INVITE_URL = 'https://sgx.com/link';
 
@@ -42,12 +44,11 @@ class InvitePage extends Component {
   };
 
   render() {
-    const { story } = this.props.location.state;
-
-    if (!story) {
+    if (!this.props.location.state || !this.props.location.state.story) {
       return <Redirect to="/" />;
     }
 
+    const { story } = this.props.location.state;
     const { userHasCopiedText } = this.state;
 
     return (
@@ -71,6 +72,22 @@ class InvitePage extends Component {
                 >
                   {APP_INVITE_URL + '/' + story.inviteID}
                 </button>
+                <div className="Invite__social">
+                  <div className="Invite__social__wrapper">
+                    <div className="Invite__social__section">
+                      <button className="Invite__social__button Invite__social__button--twitter">
+                        {twitterIcon()}
+                        <span>Share on Twitter</span>
+                      </button>
+                    </div>
+                    <div className="Invite__social__section">
+                      <button className="Invite__social__button Invite__social__button--facebook">
+                        {fbIcon()}
+                        <span>Share on Facebook</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
