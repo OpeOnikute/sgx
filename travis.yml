@@ -1,3 +1,0 @@
-language: go
-
-script: ./server/run_tests.sh
