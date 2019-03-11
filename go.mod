@@ -1,4 +1,4 @@
-module sgx
+module github.com/opeonikute/sgx
 
 require (
 	github.com/gorilla/handlers v1.4.0
