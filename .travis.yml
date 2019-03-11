@@ -1,4 +1,7 @@
 go_import_path: github.com/OpeOnikute/sgx
 
 language: go
-script: ./server/run_tests.sh
+env:
+  -  GO111MODULE=on
+script: 
+  - ./server/run_tests.sh
