@@ -51,6 +51,15 @@ class InvitePage extends Component {
     const { story } = this.props.location.state;
     const { userHasCopiedText } = this.state;
 
+    const link = `${APP_INVITE_URL}/${story.inviteID}`;
+
+    const shareText = encodeURIComponent(
+      `Join me write a story, "${story.title}"`,
+    );
+    const shareLink = encodeURIComponent(link);
+    const tweetLink = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareLink}`;
+    const fbLink = `https://facebook.com/sharer/sharer.php?u=${shareLink}&t=${shareText}`;
+
     return (
       <div className="Page Page--blue">
         <div className="Page__body">
@@ -66,25 +75,32 @@ class InvitePage extends Component {
                 <div className="Invite__link__message Invite__link__message--success">
                   {userHasCopiedText && 'Copied!'}
                 </div>
-                <button
-                  className="Invite__link"
-                  onClick={this.onClickInviteLink}
-                >
-                  {APP_INVITE_URL + '/' + story.inviteID}
-                </button>
+                <div className="Invite__link" onClick={this.onClickInviteLink}>
+                  {link}
+                </div>
                 <div className="Invite__social">
                   <div className="Invite__social__wrapper">
                     <div className="Invite__social__section">
-                      <button className="Invite__social__button Invite__social__button--twitter">
+                      <a
+                        className="Invite__social__button Invite__social__button--twitter"
+                        href={tweetLink}
+                        target="__blank"
+                        onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=350,width=480');return false;"
+                      >
                         {twitterIcon()}
                         <span>Share on Twitter</span>
-                      </button>
+                      </a>
                     </div>
                     <div className="Invite__social__section">
-                      <button className="Invite__social__button Invite__social__button--facebook">
+                      <a
+                        className="Invite__social__button Invite__social__button--facebook"
+                        href={fbLink}
+                        target="__blank"
+                        onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=350,width=480');return false;"
+                      >
                         {fbIcon()}
                         <span>Share on Facebook</span>
-                      </button>
+                      </a>
                     </div>
                   </div>
                 </div>
