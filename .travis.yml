@@ -1,3 +1,4 @@
 language: go
-
+before_script:
+  - export GOPATH="${TRAVIS_BUILD_DIR}"
 script: ./server/run_tests.sh
