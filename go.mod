@@ -1,4 +1,8 @@
-module github.com/opeonikute/sgx
+module sgx
+
+// +heroku root-package = "sgx"
+
+// +heroku install ./...
 
 require (
 	github.com/gorilla/handlers v1.4.0
