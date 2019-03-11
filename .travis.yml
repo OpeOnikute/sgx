@@ -1,4 +1,5 @@
 language: go
 before_script:
-  - export GOPATH="${TRAVIS_BUILD_DIR}"
+  - go get github.com/OpeOnikute/sgx/server/store 
+  - go get github.com/OpeOnikute/sgx/server/db 
 script: ./server/run_tests.sh
