@@ -2,6 +2,9 @@ package store
 
 import (
 	"net/url"
+	"regexp"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 //StoryRequestBody - schema for expected params in story request body
@@ -38,7 +41,9 @@ func (s *StoryRequestBody) validate() url.Values {
 		errs.Add("playerName", "Please enter a valid player name.")
 	}
 
-	if s.PlayerEmail == "" {
+	match, _ := regexp.MatchString(EmailRegex, s.PlayerEmail)
+
+	if s.PlayerEmail == "" || !match {
 		errs.Add("PlayerEmail", "Please enter a valid player email.")
 	}
 
@@ -56,7 +61,9 @@ func (s *JoinStoryRequestBody) validate() url.Values {
 		errs.Add("playerName", "Please enter a valid player name.")
 	}
 
-	if s.PlayerEmail == "" {
+	match, _ := regexp.MatchString(EmailRegex, s.PlayerEmail)
+
+	if s.PlayerEmail == "" || !match {
 		errs.Add("PlayerEmail", "Please enter a valid player email.")
 	}
 
@@ -66,7 +73,7 @@ func (s *JoinStoryRequestBody) validate() url.Values {
 func (s *AddParagraphRequestBody) validate() url.Values {
 	errs := url.Values{}
 
-	if s.StoryID == "" {
+	if s.StoryID == "" || !bson.IsObjectIdHex(s.StoryID) {
 		errs.Add("story", "Please enter a valid story.")
 	}
 
