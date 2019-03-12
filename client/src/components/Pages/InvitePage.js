@@ -4,7 +4,7 @@ import './InvitePage.scss';
 import twitterIcon from '../../svgs/twitterIcon';
 import fbIcon from '../../svgs/fbIcon';
 
-const APP_INVITE_URL = 'https://sgx.com/link';
+const APP_INVITE_URL = 'https://sgx.com/join';
 
 class InvitePage extends Component {
   state = {
@@ -51,7 +51,7 @@ class InvitePage extends Component {
     const { story } = this.props.location.state;
     const { userHasCopiedText } = this.state;
 
-    const link = `${APP_INVITE_URL}/${story.inviteID}`;
+    const link = `${APP_INVITE_URL}/${story.inviteCode}`;
 
     const shareText = encodeURIComponent(
       `Join me write a story, "${story.title}"`,
@@ -85,7 +85,7 @@ class InvitePage extends Component {
                         className="Invite__social__button Invite__social__button--twitter"
                         href={tweetLink}
                         target="__blank"
-                        onclick="window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=350,width=480');return false;"
+                        onClick="window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=350,width=480');return false;"
                       >
                         {twitterIcon()}
                         <span>Share on Twitter</span>
@@ -96,7 +96,7 @@ class InvitePage extends Component {
                         className="Invite__social__button Invite__social__button--facebook"
                         href={fbLink}
                         target="__blank"
-                        onclick="window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=350,width=480');return false;"
+                        onClick="window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=350,width=480');return false;"
                       >
                         {fbIcon()}
                         <span>Share on Facebook</span>

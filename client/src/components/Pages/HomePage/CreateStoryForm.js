@@ -20,7 +20,7 @@ class CreateStoryForm extends Component {
     if (!this.validateForm()) return;
     const { name, email, storyTitle } = this.state;
     const story = await createStory({ name, email, storyTitle });
-    this.props.onCreateStory({ story });
+    this.props.onCreateStory({ story: story.data });
   };
 
   validateForm() {
