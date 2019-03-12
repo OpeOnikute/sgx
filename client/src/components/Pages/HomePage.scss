@@ -1,2 +1,47 @@
-.Home-page {
+@import '../../_variables';
+
+.Form {
+  .Form__input-group {
+    margin-bottom: 40px;
+  }
+  .Form__label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  .Form__input {
+    width: 100%;
+    max-width: 500px;
+    height: 50px;
+    border-radius: 5px;
+    border: 1px solid #bbbbbb;
+    font-size: 1rem;
+    padding: 0 10px;
+    text-align: center;
+  }
+  .Form__button--submit {
+    width: 100%;
+    max-width: 500px;
+    height: 50px;
+    border-radius: 5px;
+    font-size: 1rem;
+    background: $primary-color;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .Form__prompt {
+    padding: 10px;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    background: $primary-color;
+    color: #ffffff;
+    border-radius: 5px;
+  }
+  .Form__prompt--error {
+    background: $error-color;
+  }
+}
+.Form--center-card {
+  margin-bottom: -20px;
 }
