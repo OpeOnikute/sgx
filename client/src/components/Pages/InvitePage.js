@@ -85,7 +85,7 @@ class InvitePage extends Component {
                         className="Invite__social__button Invite__social__button--twitter"
                         href={tweetLink}
                         target="__blank"
-                        onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=350,width=480');return false;"
+                        onclick="window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=350,width=480');return false;"
                       >
                         {twitterIcon()}
                         <span>Share on Twitter</span>
@@ -96,7 +96,7 @@ class InvitePage extends Component {
                         className="Invite__social__button Invite__social__button--facebook"
                         href={fbLink}
                         target="__blank"
-                        onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=350,width=480');return false;"
+                        onclick="window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=350,width=480');return false;"
                       >
                         {fbIcon()}
                         <span>Share on Facebook</span>
