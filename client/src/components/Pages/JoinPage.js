@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { getStory } from '../../api/story';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import pages from '../../scss/pages.module.scss';
+import { getStory } from '../../api/story';
 import buttons from '../../scss/buttons.module.scss';
 import forms from '../../scss/forms.module.scss';
+import pages from '../../scss/pages.module.scss';
 import placeholders from '../../scss/placeholders.module.scss';
 import './JoinPage.scss';
 
@@ -40,38 +40,40 @@ class JoinPage extends Component {
                   </div>
                 </div>
                 <div className={pages.CenterCardBody}>
-                  <form className={forms.Form}>
-                    {formError && (
-                      <div className={`${forms.Prompt} ${forms.ErrorPrompt}`}>
-                        {formError}
+                  <div className={pages.CenterCardWrapper}>
+                    <form className={forms.Form}>
+                      {formError && (
+                        <div className={`${forms.Prompt} ${forms.ErrorPrompt}`}>
+                          {formError}
+                        </div>
+                      )}
+                      <div className={forms.InputGroup}>
+                        <label htmlFor="name" className={forms.Label}>
+                          What's your name?
+                        </label>
+                        <input
+                          className={forms.Input}
+                          name="name"
+                          type="text"
+                          required
+                        />
                       </div>
-                    )}
-                    <div className={forms.InputGroup}>
-                      <label htmlFor="name" className={forms.Label}>
-                        What's your name?
-                      </label>
-                      <input
-                        className={forms.Input}
-                        name="name"
-                        type="text"
-                        required
-                      />
-                    </div>
-                    <div className={forms.InputGroup}>
-                      <label htmlFor="email" className={forms.Label}>
-                        What's your email? (optional)
-                      </label>
-                      <input
-                        className={forms.Input}
-                        name="email"
-                        type="email"
-                      />
-                    </div>
-                  </form>
-                  <div className={pages.CenterCardButtonWrapper1}>
-                    <Link to="/" className={buttons.Button}>
-                      Join Session
-                    </Link>
+                      <div className={forms.InputGroup}>
+                        <label htmlFor="email" className={forms.Label}>
+                          What's your email? (optional)
+                        </label>
+                        <input
+                          className={forms.Input}
+                          name="email"
+                          type="email"
+                        />
+                      </div>
+                      <div className={pages.CenterCardButtonWrapper1}>
+                        <button className={buttons.Button} type="submit">
+                          Join Session
+                        </button>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </div>
