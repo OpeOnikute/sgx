@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import './HomePage.scss';
 import { createStory } from '../../api/story';
+import buttons from '../../scss/buttons.module.scss';
+import forms from '../../scss/forms.module.scss';
+import pages from '../../scss/pages.module.scss';
+import './HomePage.scss';
 
 class HomePage extends Component {
   state = {
@@ -52,69 +55,69 @@ class HomePage extends Component {
     const { formError } = this.state;
 
     return (
-      <div className="Page Page--blue">
-        <div className="Page__body">
-          <div className="Page__center-card">
-            <div className="Page__center-card__heading">
-              <div className="Page__center-card__heading--main">Welcome!</div>
-              <div className="Page__center-card__heading--sub">
+      <div className={`${pages.Page} ${pages.BluePage}`}>
+        <div className={pages.Body}>
+          <div className={pages.CenterCard}>
+            <div className={pages.CenterCardHeading}>
+              <div className={pages.CenterCardHeadingMain}>Welcome!</div>
+              <div className={pages.CenterCardHeadingSub}>
                 No long talk.
                 <br />
                 Write a cool story with a friend as mad as you.
               </div>
             </div>
-            <div className="Page__center-card__body">
-              <form
-                className="Form Form--center-card"
-                onSubmit={this.onSubmitForm}
-              >
-                {formError && (
-                  <div className="Form__prompt Form__prompt--error">
-                    {formError}
+            <div className={pages.CenterCardBody}>
+              <div className={pages.CenterCardWrapper}>
+                <form className={forms.Form} onSubmit={this.onSubmitForm}>
+                  {formError && (
+                    <div className={`${forms.Prompt} ${forms.ErrorPrompt}`}>
+                      {formError}
+                    </div>
+                  )}
+                  <div className={forms.InputGroup}>
+                    <label htmlFor="name" className={forms.Label}>
+                      What's your name?
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      className={forms.Input}
+                      required
+                      onChange={this.handleUserInput}
+                      autoFocus
+                    />
                   </div>
-                )}
-                <div className="Form__input-group">
-                  <label htmlFor="name" className="Form__label">
-                    What's your name?
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    className="Form__input"
-                    required
-                    onChange={this.handleUserInput}
-                  />
-                </div>
-                <div className="Form__input-group">
-                  <label htmlFor="email" className="Form__label">
-                    What's your email? (optional)
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    className="Form__input"
-                    onChange={this.handleUserInput}
-                  />
-                </div>
-                <div className="Form__input-group">
-                  <label htmlFor="storyTitle" className="Form__label">
-                    What's the title of the story?
-                  </label>
-                  <input
-                    type="text"
-                    name="storyTitle"
-                    className="Form__input"
-                    required
-                    onChange={this.handleUserInput}
-                  />
-                </div>
+                  <div className={forms.InputGroup}>
+                    <label htmlFor="email" className={forms.Label}>
+                      What's your email? (optional)
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      className={forms.Input}
+                      onChange={this.handleUserInput}
+                    />
+                  </div>
+                  <div className={forms.InputGroup}>
+                    <label htmlFor="storyTitle" className={forms.Label}>
+                      What's the title of the story?
+                    </label>
+                    <input
+                      type="text"
+                      name="storyTitle"
+                      className={forms.Input}
+                      required
+                      onChange={this.handleUserInput}
+                    />
+                  </div>
 
-                <div className="Form__input-group">
-                  <button type="submit" className="Form__button--submit">
-                    Start Session
-                  </button>
-                </div>
-              </form>
+                  <div className={forms.InputGroup}>
+                    <button type="submit" className={buttons.Button}>
+                      Start Session
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>

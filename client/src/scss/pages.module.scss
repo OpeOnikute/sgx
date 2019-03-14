@@ -1,0 +1,39 @@
+@import '../_variables';
+
+.Page {
+  .Body {
+    height: 100vh;
+    min-height: 800px;
+    max-width: 650px;
+    margin: auto;
+    padding: 0 15px;
+    display: flex;
+  }
+  .CenterCard {
+    background: #ffffff;
+    align-self: center;
+    width: 100%;
+    padding: 50px 35px;
+    border-radius: 3px;
+    text-align: center;
+    .CenterCardHeading {
+      margin-bottom: 50px;
+      .CenterCardHeadingSub {
+      }
+      .CenterCardHeadingMain {
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
+    }
+    .CenterCardBody {
+      .CenterCardWrapper {
+        max-width: 400px;
+        margin: auto;
+      }
+    }
+  }
+}
+.Page.BluePage {
+  background: $primary-color;
+}

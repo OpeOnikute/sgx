@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import './InvitePage.scss';
 import twitterIcon from '../../svgs/twitterIcon';
+import pages from '../../scss/pages.module.scss';
+import placeholders from '../../scss/placeholders.module.scss';
 import fbIcon from '../../svgs/fbIcon';
 
 const APP_INVITE_URL = 'https://sgx.com/join';
@@ -61,12 +63,12 @@ class InvitePage extends Component {
     const fbLink = `https://facebook.com/sharer/sharer.php?u=${shareLink}&t=${shareText}`;
 
     return (
-      <div className="Page Page--blue">
-        <div className="Page__body">
-          <div className="Page__center-card">
-            <div className="Page__center-card__body">
+      <div className={`${pages.Page} ${pages.BluePage}`}>
+        <div className={pages.Body}>
+          <div className={pages.CenterCard}>
+            <div className={pages.CenterCardBody}>
               <div className="Invite">
-                <div className="Invite__header" />
+                <div className={placeholders.Banner} />
                 <div className="Invite__message">
                   You're almost ready!
                   <br />
