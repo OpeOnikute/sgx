@@ -2,32 +2,35 @@
 
 .Invite {
   .Invite__message {
-    margin-bottom: 15px;
-  }
-  .Invite__link__message {
-    height: 1.5rem;
-    font-style: italic;
-    margin: 5px 0;
-    font-size: 0.75rem;
-  }
-  .Invite__link__message--success {
-    color: $success-color;
+    margin-bottom: 30px;
   }
   div.Invite__link {
     font-weight: 700;
-    overflow-x: scroll;
-    background: none;
-    padding: 7.5px 10px;
-    border: 1px solid #eeeeee;
-    max-width: 100%;
+    text-align: left;
+    max-width: 400px;
+    display: flex;
+    margin: auto;
     margin-bottom: 30px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    display: inline-block;
-  }
-  button.Invite__link:focus,
-  button.Invite__link:active {
-    text-decoration: underline;
+    height: 32px;
+    div {
+      flex: 1 1 340px;
+      overflow-x: scroll;
+      display: inline-block;
+      white-space: nowrap;
+      padding: 5px 10px;
+      border: solid $gray;
+      border-width: 1px 0 1px 1px;
+      font-size: 0.75rem;
+      text-align: center;
+      border-radius: 3px 0 0 3px;
+    }
+    button {
+      width: 70px;
+      border-radius: 0 3px 3px 0;
+      background: $primary-color;
+      color: #ffffff;
+      border: 0;
+    }
   }
   .Invite__social {
     max-width: 520px;

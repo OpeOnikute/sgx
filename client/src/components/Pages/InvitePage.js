@@ -14,6 +14,7 @@ class InvitePage extends Component {
   };
 
   onClickInviteLink = (evt) => {
+    evt.preventDefault();
     this.copyTextToClipboard(evt.target.innerText);
   };
 
@@ -83,11 +84,11 @@ class InvitePage extends Component {
                   <br />
                   Share this link to invite your friend.
                 </div>
-                <div className="Invite__link__message Invite__link__message--success">
-                  {userHasCopiedText && 'Copied!'}
-                </div>
-                <div className="Invite__link" onClick={this.onClickInviteLink}>
-                  {link}
+                <div className="Invite__link">
+                  <div>{link}</div>
+                  <button onClick={this.onClickInviteLink}>
+                    {userHasCopiedText ? <i>Copied!</i> : 'Copy'}
+                  </button>
                 </div>
                 <div className="Invite__social">
                   <div className="Invite__social__wrapper">
