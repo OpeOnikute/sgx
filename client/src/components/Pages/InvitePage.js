@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import './InvitePage.scss';
-import twitterIcon from '../../svgs/twitterIcon';
 import pages from '../../scss/pages.module.scss';
 import placeholders from '../../scss/placeholders.module.scss';
 import fbIcon from '../../svgs/fbIcon';
+import twitterIcon from '../../svgs/twitterIcon';
+import './InvitePage.scss';
 
 const APP_INVITE_URL = 'https://sgx.com/join';
 
@@ -43,6 +43,15 @@ class InvitePage extends Component {
       await navigator.clipboard.writeText(text);
       this.setState({ userHasCopiedText: true });
     } catch (error) {}
+  };
+
+  onClickSocialLink = (evt) => {
+    evt.preventDefault();
+    window.open(
+      evt.target.href,
+      '',
+      'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=480',
+    );
   };
 
   render() {
@@ -87,7 +96,7 @@ class InvitePage extends Component {
                         className="Invite__social__button Invite__social__button--twitter"
                         href={tweetLink}
                         target="__blank"
-                        onClick="window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=350,width=480');return false;"
+                        onClick={this.onClickSocialLink}
                       >
                         {twitterIcon()}
                         <span>Share on Twitter</span>
@@ -98,7 +107,7 @@ class InvitePage extends Component {
                         className="Invite__social__button Invite__social__button--facebook"
                         href={fbLink}
                         target="__blank"
-                        onClick="window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=350,width=480');return false;"
+                        onClick={this.onClickSocialLink}
                       >
                         {fbIcon()}
                         <span>Share on Facebook</span>
