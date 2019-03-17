@@ -77,6 +77,7 @@ func (r Handler) GetStoryByField(field, value string) (Story, error) {
 	return story, nil
 }
 
+// ParseStory returns the story all formatted and shii.
 func (r Handler) ParseStory(ID string) (string, error) {
 
 	var story Story
@@ -196,6 +197,8 @@ func (r Handler) SendError(w http.ResponseWriter, code int, response Response, e
 	switch code {
 	case 400:
 		w.WriteHeader(http.StatusBadRequest)
+	case 442:
+		w.WriteHeader(http.StatusUnprocessableEntity)
 	case 500:
 		w.WriteHeader(http.StatusInternalServerError)
 	default:
