@@ -1,22 +1,20 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { CLIENT_BASE_URL } from '../../config';
 import pages from '../../scss/pages.module.scss';
 import placeholders from '../../scss/placeholders.module.scss';
 import fbIcon from '../../svgs/fbIcon';
 import twitterIcon from '../../svgs/twitterIcon';
 import './InvitePage.scss';
 
-const APP_INVITE_URL = 'https://sgx.com/join';
-
 class InvitePage extends Component {
   state = {
-    userHasCopiedText: false,
+    userHasCopiedLink: false,
   };
 
   onClickCopyInviteLink = (evt) => {
     evt.preventDefault();
-    const { story } = this.props.location.state;
-    this.copyTextToClipboard(`${APP_INVITE_URL}/${story.inviteCode}`);
+    this.copyTextToClipboard(this.getInviteLink());
   };
 
   fallbackCopyTextToClipboard = (text) => {
@@ -29,7 +27,7 @@ class InvitePage extends Component {
     try {
       const successful = document.execCommand('copy');
       if (successful) {
-        this.setState({ userHasCopiedText: true });
+        this.setState({ userHasCopiedLink: true });
       }
     } catch (err) {}
     document.body.removeChild(textArea);
@@ -43,7 +41,7 @@ class InvitePage extends Component {
 
     try {
       await navigator.clipboard.writeText(text);
-      this.setState({ userHasCopiedText: true });
+      this.setState({ userHasCopiedLink: true });
     } catch (error) {}
   };
 
@@ -56,20 +54,30 @@ class InvitePage extends Component {
     );
   };
 
+  getInviteLink = () => {
+    if (!this.props.location.state || !this.props.location.state.story) {
+      this.props.history.push({ pathname: '/' });
+      return;
+    }
+
+    const { story } = this.props.location.state;
+    return `${CLIENT_BASE_URL}/join/${story.inviteCode}`;
+  };
+
   render() {
     if (!this.props.location.state || !this.props.location.state.story) {
       return <Redirect to="/" />;
     }
 
     const { story } = this.props.location.state;
-    const { userHasCopiedText } = this.state;
+    const { userHasCopiedLink } = this.state;
 
-    const link = `${APP_INVITE_URL}/${story.inviteCode}`;
+    const inviteLink = this.getInviteLink();
 
     const shareText = encodeURIComponent(
       `Join me write a story, "${story.title}"`,
     );
-    const shareLink = encodeURIComponent(link);
+    const shareLink = encodeURIComponent(inviteLink);
     const tweetLink = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareLink}`;
     const fbLink = `https://facebook.com/sharer/sharer.php?u=${shareLink}&t=${shareText}`;
 
@@ -86,9 +94,9 @@ class InvitePage extends Component {
                   Share this link to invite your friend.
                 </div>
                 <div className="Invite__link">
-                  <div>{link}</div>
+                  <div>{inviteLink}</div>
                   <button onClick={this.onClickCopyInviteLink}>
-                    {userHasCopiedText ? <i>Copied!</i> : 'Copy'}
+                    {userHasCopiedLink ? <i>Copied!</i> : 'Copy'}
                   </button>
                 </div>
                 <div className="Invite__social">
