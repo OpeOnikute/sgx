@@ -3,6 +3,7 @@ import { createStory } from '../../api/story';
 import buttons from '../../scss/buttons.module.scss';
 import forms from '../../scss/forms.module.scss';
 import pages from '../../scss/pages.module.scss';
+import { RotatingCircleLoader } from '../Utilities/Loader';
 import './HomePage.scss';
 
 class HomePage extends Component {
@@ -11,13 +12,16 @@ class HomePage extends Component {
     email: '',
     storyTitle: '',
     formError: '',
+    requestingCreateStory: false,
   };
 
   onSubmitForm = async (evt) => {
     evt.preventDefault();
     if (!this.validateForm()) return;
     const { name, email, storyTitle } = this.state;
+    this.setState({ requestingCreateStory: true });
     const storyResp = await createStory({ name, email, storyTitle });
+    this.setState({ requestingCreateStory: false });
     this.props.history.push({
       pathname: '/invite',
       state: { story: storyResp.data },
@@ -52,7 +56,7 @@ class HomePage extends Component {
   };
 
   render() {
-    const { formError } = this.state;
+    const { formError, requestingCreateStory } = this.state;
 
     return (
       <div className={`${pages.Page} ${pages.BluePage}`}>
@@ -112,9 +116,19 @@ class HomePage extends Component {
                   </div>
 
                   <div className={forms.InputGroup}>
-                    <button type="submit" className={buttons.Button}>
-                      Start Session
-                    </button>
+                    {requestingCreateStory ? (
+                      <button type="submit" className={buttons.Button} disabled>
+                        <RotatingCircleLoader
+                          className={buttons.Loader}
+                          height={17}
+                          width={17}
+                        />
+                      </button>
+                    ) : (
+                      <button type="submit" className={buttons.Button}>
+                        Start Session
+                      </button>
+                    )}
                   </div>
                 </form>
               </div>
