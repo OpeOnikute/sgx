@@ -1,6 +1,6 @@
 import { SERVER_BASE_URL } from '../config';
 
-function createStory({ name, email, storyTitle }) {
+export function createStory({ name, email, storyTitle }) {
   return fetch(`${SERVER_BASE_URL}/story`, {
     method: 'POST',
     body: JSON.stringify({
@@ -12,10 +12,18 @@ function createStory({ name, email, storyTitle }) {
   }).then((data) => data.json());
 }
 
-function getStory({ inviteLink }) {
+export function getStoryByInviteLink({ inviteLink }) {
   return fetch(`${SERVER_BASE_URL}/story?f=invitecode&v=${inviteLink}`).then(
-    (data) => data.json(),
+    (response) => response.json().then((jsonData) => ({ response, jsonData })),
   );
 }
 
-export { createStory, getStory };
+export function joinStory({ inviteCode, playerName, playerEmail }) {
+  return fetch(`${SERVER_BASE_URL}/story/join`, {
+    method: 'POST',
+    body: JSON.stringify({ code: inviteCode, playerName, playerEmail }),
+    headers: { 'Content-Type': 'application/json' },
+  }).then((response) =>
+    response.json().then((jsonData) => ({ response, jsonData })),
+  );
+}
