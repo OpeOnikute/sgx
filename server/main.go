@@ -26,8 +26,9 @@ func main() {
 
 	// These two lines are important if you're designing a front-end to utilise this API methods
 	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
-	allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT"})
+	allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
+	allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "HEAD", "DELETE", "PUT", "OPTIONS"})
 
 	// Launch server with CORS validations
-	log.Fatal(http.ListenAndServe(":"+port, handlers.CORS(allowedOrigins, allowedMethods)(router)))
+	log.Fatal(http.ListenAndServe(":"+port, handlers.CORS(allowedOrigins, allowedMethods, allowedHeaders)(router)))
 }
