@@ -20,12 +20,21 @@ class HomePage extends Component {
     if (!this.validateForm()) return;
     const { name, email, storyTitle } = this.state;
     this.setState({ requestingCreateStory: true });
-    const storyResp = await createStory({ name, email, storyTitle });
-    this.setState({ requestingCreateStory: false });
-    this.props.history.push({
-      pathname: '/invite',
-      state: { story: storyResp.data },
-    });
+
+    try {
+      const storyResp = await createStory({ name, email, storyTitle });
+      this.setState({ requestingCreateStory: false });
+      this.props.history.push({
+        pathname: '/invite',
+        state: { story: storyResp.data },
+      });
+    } catch (error) {
+      this.setState({
+        formError:
+          'An error occured. Please check your internet connection and try again.',
+        requestingCreateStory: false,
+      });
+    }
   };
 
   validateForm() {
