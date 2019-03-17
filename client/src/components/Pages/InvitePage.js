@@ -13,9 +13,10 @@ class InvitePage extends Component {
     userHasCopiedText: false,
   };
 
-  onClickInviteLink = (evt) => {
+  onClickCopyInviteLink = (evt) => {
     evt.preventDefault();
-    this.copyTextToClipboard(evt.target.innerText);
+    const { story } = this.props.location.state;
+    this.copyTextToClipboard(`${APP_INVITE_URL}/${story.inviteCode}`);
   };
 
   fallbackCopyTextToClipboard = (text) => {
@@ -86,7 +87,7 @@ class InvitePage extends Component {
                 </div>
                 <div className="Invite__link">
                   <div>{link}</div>
-                  <button onClick={this.onClickInviteLink}>
+                  <button onClick={this.onClickCopyInviteLink}>
                     {userHasCopiedText ? <i>Copied!</i> : 'Copy'}
                   </button>
                 </div>
