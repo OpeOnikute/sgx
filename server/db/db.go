@@ -2,6 +2,7 @@ package db
 
 import (
 	"log"
+	"os"
 
 	mgo "gopkg.in/mgo.v2"
 )
@@ -16,9 +17,10 @@ var Session *mgo.Database
 
 const (
 	COLLECTION = "story"
-	SERVER     = "localhost"
 	DATABASE   = "sgx"
 )
+
+var SERVER = os.Getenv("SERVER")
 
 // Connect ...
 func Connect() {

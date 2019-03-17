@@ -19,7 +19,7 @@ type Handler struct{}
 const DBNAME = "sgx"
 
 // AddStory adds a Story in the DB
-func (r Handler) AddStory(params StoryRequestBody) bool {
+func (r Handler) AddStory(params StoryRequestBody) (Story, error) {
 
 	var playerOne Player
 	collection := "story"
@@ -29,21 +29,23 @@ func (r Handler) AddStory(params StoryRequestBody) bool {
 	playerOne.Email = params.PlayerEmail
 
 	var story = Story{
-		ID:        bson.NewObjectId(),
-		Title:     params.Title,
-		PlayerOne: playerOne,
-		Status:    "open",
-		Created:   time.Now(),
+		ID:         bson.NewObjectId(),
+		InviteCode: betterguid.New(),
+		Title:      params.Title,
+		PlayerOne:  playerOne,
+		Status:     "open",
+		Created:    time.Now(),
 	}
 
 	if err := db.Session.C(collection).Insert(story); err != nil {
 		log.Println(err)
-		return false
+		return story, err
 	}
 
-	return true
+	return story, nil
 }
 
+// GetStoryByID fetches a story by the specified ID.
 func (r Handler) GetStoryByID(ID string) (Story, error) {
 
 	var story Story
@@ -58,6 +60,24 @@ func (r Handler) GetStoryByID(ID string) (Story, error) {
 	return story, nil
 }
 
+// GetStoryByField fetches a story by the specified field.
+func (r Handler) GetStoryByField(field, value string) (Story, error) {
+
+	var story Story
+
+	c := db.Session.C("story")
+
+	query := bson.M{field: value}
+
+	if err := c.Find(query).One(&story); err != nil {
+		log.Println(err)
+		return story, err
+	}
+
+	return story, nil
+}
+
+// ParseStory returns the story all formatted and shii.
 func (r Handler) ParseStory(ID string) (string, error) {
 
 	var story Story
@@ -84,7 +104,7 @@ func (r Handler) ParseStory(ID string) (string, error) {
 }
 
 // JoinStory adds player two
-func (r Handler) JoinStory(params JoinStoryRequestBody) bool {
+func (r Handler) JoinStory(params JoinStoryRequestBody) (Story, error) {
 
 	var playerTwo = Player{}
 
@@ -92,37 +112,37 @@ func (r Handler) JoinStory(params JoinStoryRequestBody) bool {
 	playerTwo.Name = params.PlayerName
 	playerTwo.Email = params.PlayerEmail
 
-	var story Story
-
 	c := db.Session.C("story")
 
-	if err := c.FindId(bson.ObjectIdHex(params.StoryID)).One(&story); err != nil {
+	story, err := r.GetStoryByField("invitecode", params.Code)
+
+	if err != nil {
 		log.Println(err)
-		return false
+		return story, err
 	}
 
 	story.PlayerTwo = playerTwo
 	story.Status = "active"
 
-	err := c.UpdateId(story.ID, story)
+	err = c.UpdateId(story.ID, story)
 
 	if err != nil {
 		log.Println(err)
-		return false
+		return story, err
 	}
 
-	return true
+	return story, nil
 }
 
 // AddParagraph ...
-func (r Handler) AddParagraph(params AddParagraphRequestBody) bool {
+func (r Handler) AddParagraph(params AddParagraphRequestBody) (Story, error) {
 
 	var story Story
 	c := db.Session.C("story")
 
 	if err := c.FindId(bson.ObjectIdHex(params.StoryID)).One(&story); err != nil {
 		log.Println(err)
-		return false
+		return story, err
 	}
 
 	var content = StoryFormat{
@@ -137,10 +157,10 @@ func (r Handler) AddParagraph(params AddParagraphRequestBody) bool {
 
 	if err != nil {
 		log.Println(err)
-		return false
+		return story, err
 	}
 
-	return true
+	return story, nil
 }
 
 // GetStories returns the list of Stories
@@ -169,6 +189,7 @@ func (r Handler) SendSuccess(w http.ResponseWriter, data Response) bool {
 func (r Handler) SendError(w http.ResponseWriter, code int, response Response, err error) {
 	if err != nil {
 		log.Println(err)
+		response.Data = err.Error()
 	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -176,6 +197,8 @@ func (r Handler) SendError(w http.ResponseWriter, code int, response Response, e
 	switch code {
 	case 400:
 		w.WriteHeader(http.StatusBadRequest)
+	case 442:
+		w.WriteHeader(http.StatusUnprocessableEntity)
 	case 500:
 		w.WriteHeader(http.StatusInternalServerError)
 	default:
