@@ -1,0 +1,78 @@
+@import '../../_variables';
+
+.Invite {
+  .Invite__message {
+    margin-bottom: 30px;
+  }
+  div.Invite__link {
+    font-weight: 700;
+    text-align: left;
+    max-width: 400px;
+    display: flex;
+    margin: auto;
+    margin-bottom: 30px;
+    height: 32px;
+    div {
+      flex: 1 1 340px;
+      overflow-x: scroll;
+      display: inline-block;
+      white-space: nowrap;
+      padding: 5px 10px;
+      border: solid $gray;
+      border-width: 1px 0 1px 1px;
+      font-size: 0.75rem;
+      text-align: center;
+      border-radius: 3px 0 0 3px;
+    }
+    button {
+      width: 70px;
+      border-radius: 0 3px 3px 0;
+      background: $primary-color;
+      color: #ffffff;
+      border: 0;
+    }
+  }
+  .Invite__social {
+    max-width: 520px;
+    margin: auto;
+    .Invite__social__wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -20px;
+      .Invite__social__section {
+        flex: 1 1 250px;
+        padding: 10px 20px;
+        a.Invite__social__button {
+          width: 100%;
+          background: $primary-color;
+          padding: 20px 20px;
+          color: #ffffff;
+          font-size: 1rem;
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 0;
+          cursor: pointer;
+          font-size: 0.9rem;
+          border-radius: 3px;
+          text-decoration: none;
+          svg {
+            margin-right: 10px;
+            height: 20px;
+            fill: #ffffff;
+          }
+          span {
+            line-height: 20px;
+          }
+        }
+        a.Invite__social__button--twitter {
+          background: $color-blue-twitter;
+        }
+        a.Invite__social__button--facebook {
+          background: $color-blue-facebook;
+        }
+      }
+    }
+  }
+}

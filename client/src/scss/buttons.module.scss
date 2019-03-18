@@ -1,0 +1,19 @@
+@import '../_variables';
+
+.Button {
+  width: 100%;
+  background: $primary-color;
+  padding: 20px;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  text-decoration: none;
+  text-transform: uppercase;
+}
