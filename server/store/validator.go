@@ -1,7 +1,6 @@
 package store
 
 import (
-	"net/url"
 	"regexp"
 
 	"gopkg.in/mgo.v2/bson"
@@ -28,61 +27,63 @@ type AddParagraphRequestBody struct {
 	Content  string `json:"content"`
 }
 
+type validationErrs map[string]string
+
 //Basic validation for now.
 //eventually change this to use go-validator or a better alternative.
-func (s *StoryRequestBody) validate() url.Values {
-	errs := url.Values{}
+func (s *StoryRequestBody) validate() validationErrs {
+	errs := validationErrs{}
 
 	if s.Title == "" {
-		errs.Add("title", "The title is required.")
+		errs["title"] = "The title is required."
 	}
 
 	if s.PlayerName == "" {
-		errs.Add("playerName", "Please enter a valid player name.")
+		errs["playerName"] = "Please enter a valid player name."
 	}
 
 	match, _ := regexp.MatchString(EmailRegex, s.PlayerEmail)
 
 	if s.PlayerEmail == "" || !match {
-		errs.Add("PlayerEmail", "Please enter a valid player email.")
+		errs["PlayerEmail"] = "Please enter a valid player email."
 	}
 
 	return errs
 }
 
-func (s *JoinStoryRequestBody) validate() url.Values {
-	errs := url.Values{}
+func (s *JoinStoryRequestBody) validate() validationErrs {
+	errs := validationErrs{}
 
 	if s.Code == "" {
-		errs.Add("code", "Please enter a valid code.")
+		errs["code"] = "Please enter a valid code."
 	}
 
 	if s.PlayerName == "" {
-		errs.Add("playerName", "Please enter a valid player name.")
+		errs["playerName"] = "Please enter a valid player name."
 	}
 
 	match, _ := regexp.MatchString(EmailRegex, s.PlayerEmail)
 
 	if s.PlayerEmail != "" && !match {
-		errs.Add("PlayerEmail", "Please enter a valid player email.")
+		errs["playerEmail"] = "Please enter a valid player email."
 	}
 
 	return errs
 }
 
-func (s *AddParagraphRequestBody) validate() url.Values {
-	errs := url.Values{}
+func (s *AddParagraphRequestBody) validate() validationErrs {
+	errs := validationErrs{}
 
 	if s.StoryID == "" || !bson.IsObjectIdHex(s.StoryID) {
-		errs.Add("story", "Please enter a valid story.")
+		errs["story"] = "Please enter a valid story."
 	}
 
 	if s.PlayerID == "" {
-		errs.Add("playerID", "Please enter a valid player ID.")
+		errs["playerID"] = "Please enter a valid player ID."
 	}
 
 	if s.Content == "" {
-		errs.Add("content", "Please enter valid content.")
+		errs["content"] = "Please enter valid content."
 	}
 
 	return errs
