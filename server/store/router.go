@@ -57,11 +57,18 @@ var routes = Routes{
 		"/story",
 		controller.GetStoryByField,
 	},
+	Route{
+		"WebSocket",
+		"GET",
+		"/ws",
+		controller.handleConnections,
+	},
 }
 
 // NewRouter configures a new router to the API
 func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
+
 	for _, route := range routes {
 		var handler http.Handler
 		log.Println(route.Name)

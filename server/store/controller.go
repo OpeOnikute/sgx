@@ -2,8 +2,10 @@ package store
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
+	"github.com/gorilla/websocket"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -17,6 +19,8 @@ type Response struct {
 	Message string      `json:"message,omitempty"`
 	Data    interface{} `json:"data,omitempty"`
 }
+
+var upgrader = websocket.Upgrader{}
 
 // AddStory POST /
 func (c *Controller) AddStory(w http.ResponseWriter, r *http.Request) {
@@ -220,4 +224,38 @@ func (c *Controller) GetParsedStory(w http.ResponseWriter, r *http.Request) {
 	response.Data = parsed
 
 	c.Handler.SendSuccess(w, response)
+}
+
+func (c *Controller) handleConnections(w http.ResponseWriter, r *http.Request) {
+	// Upgrade initial GET request to a websocket
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Make sure we close the connection when the function returns
+	defer ws.Close()
+
+	for {
+		var msg Message
+		// Read in a new message as JSON and map it to a Message object
+		err := ws.ReadJSON(&msg)
+		if err != nil {
+			log.Printf("error: %v", err)
+			break
+		}
+
+		if validErrs := msg.validate(); len(validErrs) > 0 {
+			log.Printf("Invalid data entered: %v", validErrs)
+			break
+		}
+
+		//initialize the new chat map if it doesn't exist.
+		if _, ok := Clients[msg.StoryID]; !ok {
+			Clients[msg.StoryID] = make(map[*websocket.Conn]bool)
+		}
+		Clients[msg.StoryID][ws] = true
+		// Send the newly received message to the broadcast channel
+		Broadcast <- msg
+	}
 }
