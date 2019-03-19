@@ -63,7 +63,7 @@ func (s *JoinStoryRequestBody) validate() url.Values {
 
 	match, _ := regexp.MatchString(EmailRegex, s.PlayerEmail)
 
-	if s.PlayerEmail == "" || !match {
+	if s.PlayerEmail != "" && !match {
 		errs.Add("PlayerEmail", "Please enter a valid player email.")
 	}
 

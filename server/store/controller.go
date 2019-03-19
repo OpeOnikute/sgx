@@ -102,6 +102,35 @@ func (c *Controller) AddParagraph(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// GetStoryByField POST /
+func (c *Controller) GetStoryByField(w http.ResponseWriter, r *http.Request) {
+	var response Response
+	var story Story
+
+	queryParams := r.URL.Query()
+
+	if len(queryParams["f"]) < 1 || len(queryParams["v"]) < 1 {
+		response.Message = "The parameters you entered are invalid."
+		c.Handler.SendError(w, 442, response, nil)
+		return
+	}
+
+	field := queryParams["f"][0]
+	value := queryParams["v"][0]
+
+	//confirm the story exists first
+	story, err := c.Handler.GetStoryByField(field, value)
+
+	if err != nil {
+		response.Message = err.Error()
+		c.Handler.SendError(w, 400, response, err)
+		return
+	}
+
+	response.Data = story
+	c.Handler.SendSuccess(w, response)
+}
+
 // JoinStory POST /
 func (c *Controller) JoinStory(w http.ResponseWriter, r *http.Request) {
 	var validRequest JoinStoryRequestBody

@@ -1,25 +1,17 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+import HomePage from './components/Pages/HomePage';
+import { Route } from 'react-router-dom';
+import InvitePage from './components/Pages/InvitePage';
+import JoinPage from './components/Pages/JoinPage';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <Route path="/" exact component={HomePage} />
+        <Route path="/invite" exact component={InvitePage} />
+        <Route path="/join/:inviteLink" component={JoinPage} />
       </div>
     );
   }

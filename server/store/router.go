@@ -51,6 +51,12 @@ var routes = Routes{
 		"/stories",
 		controller.GetAllStories,
 	},
+	Route{
+		"GetStory",
+		"GET",
+		"/story",
+		controller.GetStoryByField,
+	},
 }
 
 // NewRouter configures a new router to the API
