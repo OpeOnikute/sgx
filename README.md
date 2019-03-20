@@ -9,3 +9,5 @@ Web-based, interactive game based on the specs defined [here](https://github.com
 ## TODO
 
 - Implement Redis store for the websocket channels.
+- Separate creating a story from joining the story on WS level.
+- Investigate storing websocket signal timelines for fault tolerance.

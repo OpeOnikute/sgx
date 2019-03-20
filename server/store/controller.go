@@ -246,6 +246,7 @@ func (c *Controller) handleConnections(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if validErrs := msg.validate(); len(validErrs) > 0 {
+			//TODO: Write the error to the client here.
 			log.Printf("Invalid data entered: %v", validErrs)
 			break
 		}
