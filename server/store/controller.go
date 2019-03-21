@@ -2,6 +2,7 @@ package store
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -241,22 +242,35 @@ func (c *Controller) handleConnections(w http.ResponseWriter, r *http.Request) {
 		// Read in a new message as JSON and map it to a Message object
 		err := ws.ReadJSON(&msg)
 		if err != nil {
-			log.Printf("error: %v", err)
+			errMsg := fmt.Sprintf("error: %v", err)
+			log.Println(errMsg)
+			WriteToClient(ws, errMsg, nil)
 			break
 		}
 
 		if validErrs := msg.validate(); len(validErrs) > 0 {
 			//TODO: Write the error to the client here.
-			log.Printf("Invalid data entered: %v", validErrs)
+			errMsg := fmt.Sprintf("Invalid data entered: %v", validErrs)
+			log.Println(errMsg)
+			WriteToClient(ws, errMsg, nil)
 			break
 		}
-
-		//initialize the new chat map if it doesn't exist.
-		if _, ok := Clients[msg.StoryID]; !ok {
-			Clients[msg.StoryID] = make(map[*websocket.Conn]bool)
-		}
-		Clients[msg.StoryID][ws] = true
 		// Send the newly received message to the broadcast channel
+		msg.Client = ws
 		Broadcast <- msg
+	}
+}
+
+// WriteToClient sends a json ws message to a connected client
+func WriteToClient(client *websocket.Conn, msg string, data interface{}) {
+	errMsg := ErrorMessage{
+		ErrorSignal,
+		msg,
+		data,
+	}
+	err := client.WriteJSON(errMsg)
+	if err != nil {
+		log.Printf("error: %v", err)
+		client.Close()
 	}
 }

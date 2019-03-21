@@ -10,9 +10,13 @@ import (
 )
 
 const (
-	ErrorSignal       = "error"
-	JoinStorySignal   = "story:join"
-	CreateStorySignal = "story:create"
+	ErrorSignal          = "error"
+	JoinStorySignal      = "story:join"
+	CreateStorySignal    = "story:create"
+	CreatedStorySignal   = "story:created"
+	AddParagraphSignal   = "story:paragraph"
+	AddedParagraphSignal = "story:new-paragraph"
+	EndStorySignal       = "story:end"
 )
 
 var handler = &Handler{}
@@ -28,17 +32,25 @@ type SocketHandler struct {
 //		*websocket.Conn: bool
 //	}
 //}
-var Clients = make(map[string]map[*websocket.Conn]bool)
+var Clients = make(map[bson.ObjectId]map[*websocket.Conn]bool)
 
 // Broadcast channel
 var Broadcast = make(chan Message)
 
 // Message defines the structure of messages expected from the client
 type Message struct {
-	Signal     string  `json:"signal"`
-	InviteCode string  `json:"inviteCode,omitempty"`
-	StoryID    string  `json:"storyID,omitempty"`
-	Content    Content `json:"content"`
+	Client     *websocket.Conn `json:"client,omitempty"`
+	Signal     string          `json:"signal"`
+	InviteCode string          `json:"inviteCode,omitempty"`
+	StoryID    bson.ObjectId   `json:"storyID,omitempty"`
+	Content    Content         `json:"content"`
+}
+
+// ErrorMessage defines the structure of ws error messages sent to clients
+type ErrorMessage struct {
+	Signal  string      `json:"signal"`
+	Message string      `json:"message,omitempty"`
+	Data    interface{} `json:"data"`
 }
 
 // Content defines the structure of the json message content
@@ -63,7 +75,7 @@ func (m *Message) validate() ValidationErrs {
 		errs["inviteCode"] = "Please enter a valid invite code."
 	}
 
-	if m.StoryID != "" && !bson.IsObjectIdHex(m.StoryID) {
+	if m.StoryID == "" {
 		errs["storyID"] = "Please enter a valid story."
 	}
 
@@ -87,17 +99,24 @@ func createStory(msg Message) {
 
 	if err != nil {
 		log.Println(err)
+		WriteToClient(msg.Client, err.Error(), nil)
 		return
 	}
 
+	//register the client for the story here.
+	//this is especially important here because the story id can only be gotten for the first time here.
+	registerClient(story.ID, msg.Client)
+
 	responseMessage := Message{
-		Signal:     "story:created",
+		Signal:     CreatedStorySignal,
 		InviteCode: story.InviteCode,
+		StoryID:    story.ID,
 		Content: Content{
 			StoryTitle:  story.Title,
 			PlayerID:    story.PlayerOne.UID,
 			PlayerEmail: story.PlayerOne.Email,
 			PlayerName:  story.PlayerOne.Name,
+			Time:        msg.Content.Time,
 		},
 	}
 
@@ -122,12 +141,58 @@ func joinStory(msg Message) {
 
 	if err != nil {
 		log.Println(err)
+		WriteToClient(msg.Client, err.Error(), nil)
 		return
 	}
 
+	//register the client for the story here.
+	registerClient(story.ID, msg.Client)
+
 	// mutate message signal to indicate what just happened.
 	msg.Signal = "player:new"
+	msg.StoryID = story.ID
 	msg.Content.PlayerID = story.PlayerTwo.UID
+	broadcastMessage(msg)
+}
+
+func addParagraph(msg Message) {
+
+	request := AddParagraphRequestBody{
+		msg.StoryID,
+		msg.Content.PlayerID,
+		msg.Content.Message,
+	}
+
+	story, err := handler.AddParagraph(request)
+
+	if err != nil {
+		WriteToClient(msg.Client, err.Error(), nil)
+		log.Println(err)
+		return
+	}
+
+	msg.Signal = AddedParagraphSignal
+	msg.StoryID = story.ID
+	broadcastMessage(msg)
+}
+
+func endStory(msg Message) {
+
+	request := EndStoryRequestBody{
+		msg.StoryID,
+		msg.Content.PlayerID,
+	}
+
+	story, err := handler.EndStory(request)
+
+	if err != nil {
+		log.Println(err)
+		WriteToClient(msg.Client, err.Error(), nil)
+		return
+	}
+
+	msg.Signal = EndStorySignal
+	msg.StoryID = story.ID
 	broadcastMessage(msg)
 }
 
@@ -139,10 +204,20 @@ func handleMessage(msg Message) {
 	case CreateStorySignal:
 		createStory(msg)
 		break
+	case AddParagraphSignal:
+		addParagraph(msg)
+		break
+	case EndStorySignal:
+		endStory(msg)
+		break
 	}
 }
 
 func broadcastMessage(msg Message) {
+	if msg.StoryID == "" {
+		log.Println("No story ID passed to broadcast to.")
+		return
+	}
 	chatClients := Clients[msg.StoryID]
 	for client := range chatClients {
 		err := client.WriteJSON(msg)
@@ -152,6 +227,15 @@ func broadcastMessage(msg Message) {
 			delete(chatClients, client)
 		}
 	}
+}
+
+//Remains to be seen if this need to be done for every message handled like such.
+func registerClient(storyID bson.ObjectId, client *websocket.Conn) {
+	//initialize the new chat map if it doesn't exist.
+	if _, ok := Clients[storyID]; !ok {
+		Clients[storyID] = make(map[*websocket.Conn]bool)
+	}
+	Clients[storyID][client] = true
 }
 
 // HandleSocketMessages is a Go routine that listens infinitely on the broadcast channel, maps the story and

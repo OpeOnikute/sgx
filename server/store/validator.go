@@ -20,11 +20,17 @@ type JoinStoryRequestBody struct {
 	PlayerEmail string `json:"playerEmail"`
 }
 
+//EndStoryRequestBody - schema for expected params
+type EndStoryRequestBody struct {
+	StoryID  bson.ObjectId `json:"storyID"`
+	PlayerID string        `json:"playerID"`
+}
+
 // AddParagraphRequestBody ...
 type AddParagraphRequestBody struct {
-	StoryID  string `json:"storyID"`
-	PlayerID string `json:"playerID"`
-	Content  string `json:"content"`
+	StoryID  bson.ObjectId `json:"storyID"`
+	PlayerID string        `json:"playerID"`
+	Content  string        `json:"content"`
 }
 
 // ValidationErrs ...
@@ -75,7 +81,7 @@ func (s *JoinStoryRequestBody) validate() ValidationErrs {
 func (s *AddParagraphRequestBody) validate() ValidationErrs {
 	errs := ValidationErrs{}
 
-	if s.StoryID == "" || !bson.IsObjectIdHex(s.StoryID) {
+	if s.StoryID == "" {
 		errs["story"] = "Please enter a valid story."
 	}
 
