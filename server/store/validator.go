@@ -20,19 +20,26 @@ type JoinStoryRequestBody struct {
 	PlayerEmail string `json:"playerEmail"`
 }
 
-// AddParagraphRequestBody ...
-type AddParagraphRequestBody struct {
-	StoryID  string `json:"storyID"`
-	PlayerID string `json:"playerID"`
-	Content  string `json:"content"`
+//EndStoryRequestBody - schema for expected params
+type EndStoryRequestBody struct {
+	StoryID  bson.ObjectId `json:"storyID"`
+	PlayerID string        `json:"playerID"`
 }
 
-type validationErrs map[string]string
+// AddParagraphRequestBody ...
+type AddParagraphRequestBody struct {
+	StoryID  bson.ObjectId `json:"storyID"`
+	PlayerID string        `json:"playerID"`
+	Content  string        `json:"content"`
+}
+
+// ValidationErrs ...
+type ValidationErrs map[string]string
 
 //Basic validation for now.
 //eventually change this to use go-validator or a better alternative.
-func (s *StoryRequestBody) validate() validationErrs {
-	errs := validationErrs{}
+func (s *StoryRequestBody) validate() ValidationErrs {
+	errs := ValidationErrs{}
 
 	if s.Title == "" {
 		errs["title"] = "The title is required."
@@ -51,8 +58,8 @@ func (s *StoryRequestBody) validate() validationErrs {
 	return errs
 }
 
-func (s *JoinStoryRequestBody) validate() validationErrs {
-	errs := validationErrs{}
+func (s *JoinStoryRequestBody) validate() ValidationErrs {
+	errs := ValidationErrs{}
 
 	if s.Code == "" {
 		errs["code"] = "Please enter a valid code."
@@ -71,10 +78,10 @@ func (s *JoinStoryRequestBody) validate() validationErrs {
 	return errs
 }
 
-func (s *AddParagraphRequestBody) validate() validationErrs {
-	errs := validationErrs{}
+func (s *AddParagraphRequestBody) validate() ValidationErrs {
+	errs := ValidationErrs{}
 
-	if s.StoryID == "" || !bson.IsObjectIdHex(s.StoryID) {
+	if s.StoryID == "" {
 		errs["story"] = "Please enter a valid story."
 	}
 

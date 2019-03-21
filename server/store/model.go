@@ -47,6 +47,7 @@ type Story struct {
 	SocketURL  string        `json:"socketurl,omitempty"`
 	Status     string        `json:"status"`
 	Created    time.Time     `json:"created"`
+	Finished   time.Time     `json:"finished"`
 }
 
 // Stories is just a list of stories, really.

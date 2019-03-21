@@ -24,6 +24,8 @@ func main() {
 
 	router := store.NewRouter() // create routes
 
+	go store.HandleSocketMessages()
+
 	// These two lines are important if you're designing a front-end to utilise this API methods
 	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
 	allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})

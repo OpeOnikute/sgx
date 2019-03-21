@@ -2,8 +2,11 @@ package store
 
 import (
 	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 
+	"github.com/gorilla/websocket"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -17,6 +20,8 @@ type Response struct {
 	Message string      `json:"message,omitempty"`
 	Data    interface{} `json:"data,omitempty"`
 }
+
+var upgrader = websocket.Upgrader{}
 
 // AddStory POST /
 func (c *Controller) AddStory(w http.ResponseWriter, r *http.Request) {
@@ -220,4 +225,52 @@ func (c *Controller) GetParsedStory(w http.ResponseWriter, r *http.Request) {
 	response.Data = parsed
 
 	c.Handler.SendSuccess(w, response)
+}
+
+func (c *Controller) handleConnections(w http.ResponseWriter, r *http.Request) {
+	// Upgrade initial GET request to a websocket
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Make sure we close the connection when the function returns
+	defer ws.Close()
+
+	for {
+		var msg Message
+		// Read in a new message as JSON and map it to a Message object
+		err := ws.ReadJSON(&msg)
+		if err != nil {
+			errMsg := fmt.Sprintf("error: %v", err)
+			log.Println(errMsg)
+			WriteToClient(ws, errMsg, nil)
+			break
+		}
+
+		if validErrs := msg.validate(); len(validErrs) > 0 {
+			//TODO: Write the error to the client here.
+			errMsg := fmt.Sprintf("Invalid data entered: %v", validErrs)
+			log.Println(errMsg)
+			WriteToClient(ws, errMsg, nil)
+			break
+		}
+		// Send the newly received message to the broadcast channel
+		msg.Client = ws
+		Broadcast <- msg
+	}
+}
+
+// WriteToClient sends a json ws message to a connected client
+func WriteToClient(client *websocket.Conn, msg string, data interface{}) {
+	errMsg := ErrorMessage{
+		ErrorSignal,
+		msg,
+		data,
+	}
+	err := client.WriteJSON(errMsg)
+	if err != nil {
+		log.Printf("error: %v", err)
+		client.Close()
+	}
 }

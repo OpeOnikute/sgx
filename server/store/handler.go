@@ -2,6 +2,7 @@ package store
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -46,13 +47,13 @@ func (r Handler) AddStory(params StoryRequestBody) (Story, error) {
 }
 
 // GetStoryByID fetches a story by the specified ID.
-func (r Handler) GetStoryByID(ID string) (Story, error) {
+func (r Handler) GetStoryByID(ID bson.ObjectId) (Story, error) {
 
 	var story Story
 
 	c := db.Session.C("story")
 
-	if err := c.FindId(bson.ObjectIdHex(ID)).One(&story); err != nil {
+	if err := c.FindId(ID).One(&story); err != nil {
 		log.Println(err)
 		return story, err
 	}
@@ -103,6 +104,37 @@ func (r Handler) ParseStory(ID string) (string, error) {
 	return parsed, nil
 }
 
+//EndStory ...
+func (r Handler) EndStory(params EndStoryRequestBody) (Story, error) {
+
+	var story Story
+
+	c := db.Session.C("story")
+
+	err := c.FindId(params.StoryID).One(&story)
+
+	if err != nil {
+		log.Println(err)
+		return story, err
+	}
+
+	if story.PlayerOne.UID != params.PlayerID || story.PlayerTwo.UID != params.PlayerID {
+		return Story{}, errors.New("This player is not valid")
+	}
+
+	story.Status = "finished"
+	story.Finished = time.Now()
+
+	err = c.UpdateId(story.ID, story)
+
+	if err != nil {
+		log.Println(err)
+		return story, err
+	}
+
+	return story, nil
+}
+
 // JoinStory adds player two
 func (r Handler) JoinStory(params JoinStoryRequestBody) (Story, error) {
 
@@ -140,9 +172,13 @@ func (r Handler) AddParagraph(params AddParagraphRequestBody) (Story, error) {
 	var story Story
 	c := db.Session.C("story")
 
-	if err := c.FindId(bson.ObjectIdHex(params.StoryID)).One(&story); err != nil {
+	if err := c.FindId(params.StoryID).One(&story); err != nil {
 		log.Println(err)
 		return story, err
+	}
+
+	if story.PlayerOne.UID != params.PlayerID || story.PlayerTwo.UID != params.PlayerID {
+		return Story{}, errors.New("This player is not valid")
 	}
 
 	var content = StoryFormat{
