@@ -171,6 +171,9 @@ func addParagraph(msg Message) {
 		return
 	}
 
+	//handle re-connection instances where this client connection isn't associated with any story.
+	registerClient(story.ID, msg.Client)
+
 	msg.Signal = AddedParagraphSignal
 	msg.StoryID = story.ID
 	broadcastMessage(msg)
@@ -190,6 +193,9 @@ func endStory(msg Message) {
 		WriteToClient(msg.Client, err.Error(), nil)
 		return
 	}
+
+	//handle re-connection instances where this client connection isn't associated with any story.
+	registerClient(story.ID, msg.Client)
 
 	msg.Signal = EndStorySignal
 	msg.StoryID = story.ID
