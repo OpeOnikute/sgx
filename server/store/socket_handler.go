@@ -75,7 +75,7 @@ func (m *Message) validate() ValidationErrs {
 		errs["inviteCode"] = "Please enter a valid invite code."
 	}
 
-	if m.StoryID == "" {
+	if m.StoryID == "" && m.Signal != CreateStorySignal {
 		errs["storyID"] = "Please enter a valid story."
 	}
 
